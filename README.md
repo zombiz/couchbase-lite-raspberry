@@ -96,3 +96,83 @@ KEYの一覧を取得するのみです。
     $ ./replicate file [file_name] [couchbase_lite_database_name] [syncgateway_ip] [syncgateway_databse_name]
     $ ./replicate [couchbase_list_username] [couchbase_lite_password] [couchbase_lite_database_name] [syncgateway_ip] [syncgateway_databse_name]
 
+
+
+
+ Couchbase-lite-sample
+
+This repository is a little modified contents of https://github.com/couchbaselabs/couchbase-lite-local .
+
+We will explain the shell we created with changes.
+
+ change point
+
+1. Upgrade version of jar used internally
+
+As of April 24, 2015 we could not perform a replicate with the Sync Gateway. So, when I upgraded the version of jar I used internally, Replicate worked fine.
+
+2. File output of Couchbase Lite's username and password
+
+When Couchbase Lite is launched, username and password are output as standard. We made them output not only to standard output but also to files.
+
+3. Do not accept forced termination command
+
+trap("SIGINT") { exit! } 
+Delete
+
+4. Do not wait for standard input
+
+ loop do puts "Press Ctrl-C to shutdown" STDIN.gets end 
+To
+
+ loop do end 
+change to
+
+ How to create a jar
+
+I made the above changes, so I created the jar again.
+
+ $ jar cfm cbl.jar ./META-INF/MANIFEST.MF JarMain.class META-INF/ couchbase-lite-local 
+ About the shell you created
+
+It is under the sh directory.
+
+ 1. Start couchbase lite
+
+ $ nohup java -jar cbl.jar & 
+In this fix, username and password are output to couchbase_lite_info.txt.
+
+ About parameters
+
+File_name ... Path to the file created at startup
+Couchbase_lite_username ... User name for CouchbaseLite authentication
+Couchbase_lite_passwoed ... password for CouchbaseLite authentication
+Couchbase_lite_database_name ... Database name on CouchbaseLite
+Document_id ... ID of the document
+Json_data ... JSON data
+Query ... Detailed parameters when retrieving documents ( reference )
+Syncgateway_ip ... IP of the server on which SyncGateway is running (with port number)
+Syncgateway_database_name ... The name of the database prepared by SyncGateway
+ 2. Creating the database
+
+ $ ./create_database file [file_name] [couchbase_lite_database_name] $ ./create_database [couchbase_list_username] [couchbase_lite_password] [couchbase_lite_database_name] 
+ 3. Acquiring the database
+
+ $ ./get_database file [file_name] [couchbase_lite_database_name] $ ./get_database [couchbase_list_username] [couchbase_lite_password] [couchbase_lite_database_name] 
+ 4. Delete database
+
+ $ ./delete_database file [file_name] [couchbase_lite_database_name] $ ./delete_database [couchbase_list_username] [couchbase_lite_password] [couchbase_lite_database_name] 
+ 5. Create a document
+
+ $ ./create_document file [file_name] [couchbase_lite_database_name] [json_data] $ ./create_document [couchbase_list_username] [couchbase_lite_password] [couchbase_lite_database_name] '[json_data]' 
+ 6. Get document list
+
+ $ ./get_all_document file [file_name] [couchbase_lite_database_name] $ ./get_all_document [couchbase_list_username] [couchbase_lite_password] [couchbase_lite_database_name] 
+It only gets a list of KEY.
+
+ 7. Acquire document
+
+ $ ./get_document file [file_name] [couchbase_lite_database_name] [document_id] [query] $ ./get_document [couchbase_list_username] [couchbase_lite_password] [couchbase_lite_database_name] [document_id] [query] 
+ 8. Synchronization with Couchbase Server
+
+ $ ./replicate file [file_name] [couchbase_lite_database_name] [syncgateway_ip] [syncgateway_databse_name] $ ./replicate [couchbase_list_username] [couchbase_lite_password] [couchbase_lite_database_name] [syncgateway_ip] [syncgateway_databse_name] 
